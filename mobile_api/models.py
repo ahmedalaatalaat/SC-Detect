@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from django.utils import timezone
 from django.db import models
 
+
 class SystemUser(models.Model):
     gender_types = (
         ("M", "Male"),
@@ -25,7 +26,6 @@ class SystemUser(models.Model):
         return self.user.username
 
 
-
 class SCDHistory(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to="scd_images/")
@@ -38,8 +38,6 @@ class SCDHistory(models.Model):
 
     def __str__(self):
         return str(timezone.localtime(self.timestamp))
-
-
 
 
 @receiver(post_save, sender=User)

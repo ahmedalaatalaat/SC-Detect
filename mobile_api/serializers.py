@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import *
 
+
 class RegistrationSerializer(serializers.Serializer):
     gender_types = (
         ("M", "Male"),
@@ -41,3 +42,4 @@ class SCDHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SCDHistory
         fields = ["id", "timestamp", "diagnose", "image"]
+

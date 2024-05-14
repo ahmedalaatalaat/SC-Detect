@@ -152,4 +152,3 @@ class SDCHistoryView(APIView):
         SCDHistory.objects.filter(id=request.data.get("id")).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
