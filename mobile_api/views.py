@@ -6,12 +6,8 @@ from django.contrib.auth.models import User
 from main.utils import get_object_or_none
 from rest_framework.views import APIView
 from rest_framework import status
-from django.views import View
 from .serializers import *
-from random import sample
 from .models import *
-import json
-
 
 
 class RegistrationView(APIView):
@@ -46,7 +42,6 @@ class RegistrationView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class LoginView(APIView):
     
     def get(self, request):
@@ -67,7 +62,6 @@ class LoginView(APIView):
                 return Response({"code": 702, "error": "Invalid Email or Password!"}, status=status.HTTP_403_FORBIDDEN)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class ProfileView(APIView):
@@ -106,3 +100,56 @@ class ProfileView(APIView):
     def delete(self, request):
         request.user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ResetPasswordView(APIView):
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = (IsAuthenticated, )
+    
+    def put(self, request):
+        serializer = ResetPasswordSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            if request.user.check_password(request.data.get('old_password')):
+                request.user.set_password(request.data.get('new_password'))
+                request.user.save()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            else:
+                return Response({"code": 702, "error": "Invalid Email or Password!"}, status=status.HTTP_403_FORBIDDEN) 
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SDCHistoryView(APIView):
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = (IsAuthenticated, )
+    
+    
+    def get(self, request):
+        scd_histories = SCDHistory.objects.filter(user=request.user)
+        
+        if request.query_params.get('search'):
+            scd_histories = scd_histories.filter(diagnose__icontains=request.query_params.get('search'))
+        
+        serializer = SCDHistorySerializer(scd_histories, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        serializer = SCDHistorySerializer(data=request.data)
+        if serializer.is_valid():
+            model_predication = ""
+            scd_history = SCDHistory.objects.create(
+                image=request.FILES.get('image'),
+                diagnose=model_predication,
+                user=request.user,
+            )
+            serializer = SCDHistorySerializer(scd_history, many=False)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request):
+        SCDHistory.objects.filter(id=request.data.get("id")).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+

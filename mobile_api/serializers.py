@@ -20,7 +20,6 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(min_length=8, max_length=20)
 
 
-
 class ProfileSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(source='user.username', required=False)
     name = serializers.CharField(source="user.first_name")
@@ -29,3 +28,16 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = SystemUser
         fields = ["name", "email", "phone", "image", 'birthday', 'gender']
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(min_length=8, max_length=20)
+    new_password = serializers.CharField(min_length=8, max_length=20)
+
+
+class SCDHistorySerializer(serializers.ModelSerializer):
+    diagnose = serializers.CharField(required=False)
+    
+    class Meta:
+        model = SCDHistory
+        fields = ["id", "timestamp", "diagnose", "image"]
