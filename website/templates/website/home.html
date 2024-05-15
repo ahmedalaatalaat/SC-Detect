@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload and Analysis</title>
+    <link rel="stylesheet" href="{% static 'website/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Upload an Image for Analysis</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="image">Choose an image:</label>
+            <input type="file" id="image" name="image" accept="image/*" required>
+            <button type="submit">Upload</button>
+        </form>
+        {% if result %}
+            <div class="result">
+                <h2>Analysis Result:</h2>
+                <p>{{result}}</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

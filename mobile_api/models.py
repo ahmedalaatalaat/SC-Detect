@@ -29,7 +29,7 @@ class SystemUser(models.Model):
 class SCDHistory(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to="scd_images/")
-    diagnose = models.CharField(max_length=30)
+    diagnose = models.CharField(max_length=30, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:

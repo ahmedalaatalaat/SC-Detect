@@ -5,9 +5,11 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 from main.utils import get_object_or_none
 from rest_framework.views import APIView
+from .ai_model import utils as ai_utils
 from rest_framework import status
 from .serializers import *
 from .models import *
+
 
 
 class RegistrationView(APIView):
@@ -137,12 +139,19 @@ class SDCHistoryView(APIView):
     def post(self, request):
         serializer = SCDHistorySerializer(data=request.data)
         if serializer.is_valid():
-            model_predication = ""
+            
+            # create record in database
             scd_history = SCDHistory.objects.create(
                 image=request.FILES.get('image'),
-                diagnose=model_predication,
                 user=request.user,
             )
+            # send image path to the AI model to predict the disease
+            model_predication = ai_utils.predict_cancer_disease(scd_history.image.path)
+            
+            # save the predicated disease in the database
+            scd_history.diagnose = model_predication
+            scd_history.save()
+
             serializer = SCDHistorySerializer(scd_history, many=False)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:

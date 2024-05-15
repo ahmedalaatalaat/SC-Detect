@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # My Applications
     "mobile_api",
+    "website",
 ]
 
 MIDDLEWARE = [
@@ -62,7 +63,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            str(BASE_DIR / "mobile_api/templates/"),
+            str(BASE_DIR / "website/templates/")
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -137,7 +138,7 @@ STATIC_ROOT = str(PARENT_DIR / "static_root")
 MEDIA_ROOT = str(PARENT_DIR / "media_root")
 
 STATICFILES_DIRS = [  # put all you static files dirs in here that i deal with not the server
-    str(BASE_DIR / "mobile_api/static/")
+    str(BASE_DIR / "website/static/")
 ]
 
 # Default primary key field type
