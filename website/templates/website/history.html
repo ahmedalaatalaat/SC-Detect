@@ -4,10 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Upload and Analysis</title>
+    <title>History Page</title>
     <link rel="stylesheet" href="{% static 'website/style.css' %}">
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'website/history.css' %}">
 </head>
 <body>
     <!-- Navbar with Logout Button -->
@@ -17,7 +18,7 @@
             <div class="collapse navbar-collapse justify-content-end">
                 <ul class="navbar-nav">
                     <li class="nav-item mr-2">
-                        <a href="{% url 'website:history_page' %}" class="btn btn-success">History</a>
+                        <a href="{% url 'website:home_page' %}" class="btn btn-success">Home</a>
                     </li>
                     <li class="nav-item">
                         <a href="{% url 'website:logout_page' %}" class="btn btn-danger">Logout</a>
@@ -26,23 +27,31 @@
             </div>
         </div>
     </nav>
-    
-    <div class="container mt-5">
-        <h1 class="text-center">Upload an Image for Analysis</h1>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="image">Choose an image:</label>
-                <input type="file" class="form-control-file" id="image" name="image" accept="image/*" required>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1 class="text-center mb-4">History</h1>
+        <div class="row">
+            {% for item in histories %}
+            <div class="col-md-12">
+                <div class="history-item">
+                    <div class="row">
+                        <div class="col-md-3 text-center">
+                            <img src="{{ item.image.url }}" class="img-fluid image" alt="Image">
+                        </div>
+                        <div class="col-md-9">
+                            <h5 class="diagnose">{{ item.diagnose }}</h5>
+                            <p class="text-muted timestamp">Diagnosed on: {{ item.timestamp }}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary btn-block">Get Results</button>
-        </form>
-        {% if result %}
-            <div class="result mt-5">
-                <h2>Analysis Result:</h2>
-                <p>{{ result }}</p>
+            {% empty %}
+            <div class="col-md-12">
+                <div class="alert alert-info">No history items found.</div>
             </div>
-        {% endif %}
+            {% endfor %}
+        </div>
     </div>
 
     <!-- Bootstrap JS and dependencies -->
